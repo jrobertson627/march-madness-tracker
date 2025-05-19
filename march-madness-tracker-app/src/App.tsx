@@ -1,19 +1,16 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import InitialSearch from './pages/initial-search/initial-search';
 
-import MultipleSelectChip from './components/mui-dropdown/my-dropdown'
-import ComboBox from './components/mui-autocomplete/mui-autocomplete'
-import './App.css'
-
-function App() {
-
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        {<ComboBox/>}
-        {<MultipleSelectChip/>}
-      </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/welcome" replace />} />
+        <Route path="/welcome" element={<InitialSearch />} />
+      </Routes>
+    </Router>
+  );
+};
 
-    </>
-  )
-}
-
-export default App
+export default App;
