@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
@@ -9,6 +8,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+
+import { METRICS } from '../../utils/metrics';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -21,68 +22,61 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
-
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
+function getStyles(key: string, activeKeys: readonly string[], theme: Theme) {
   return {
-    fontWeight: personName.includes(name)
+    fontWeight: activeKeys.includes(key)
       ? theme.typography.fontWeightMedium
       : theme.typography.fontWeightRegular,
   };
 }
 
-export default function MultipleSelectChip() {
-  const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>([]);
+interface MetricPickerProps {
+  activeKeys: string[];
+  onChange: (activeKeys: string[]) => void;
+}
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+export default function MetricPicker({ activeKeys, onChange }: MetricPickerProps) {
+  const theme = useTheme();
+
+  const handleChange = (event: SelectChangeEvent<typeof activeKeys>) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
+    onChange(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
   };
 
+  const labelFor = (key: string) => METRICS.find((m) => m.key === key)?.label ?? key;
+
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
+        <InputLabel id="metric-picker-label">Metrics</InputLabel>
         <Select
-          labelId="demo-multiple-chip-label"
-          id="demo-multiple-chip"
+          labelId="metric-picker-label"
+          id="metric-picker"
           multiple
-          value={personName}
+          value={activeKeys}
           onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+          input={<OutlinedInput id="select-multiple-chip" label="Metrics" />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
+              {selected.map((key) => (
+                <Chip key={key} label={labelFor(key)} />
               ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {METRICS.map((metric) => (
             <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
+              key={metric.key}
+              value={metric.key}
+              style={getStyles(metric.key, activeKeys, theme)}
             >
-              {name}
+              {metric.label}
             </MenuItem>
           ))}
         </Select>

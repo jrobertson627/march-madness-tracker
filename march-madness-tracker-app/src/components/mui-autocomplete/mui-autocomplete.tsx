@@ -1,15 +1,26 @@
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import * as Constants from '../../utils/constants';
+import type { Team } from '../../services/api';
 
-export default function ComboBox() {
+interface TeamAutocompleteProps {
+  label: string;
+  options: Team[];
+  value: Team | null;
+  onChange: (team: Team | null) => void;
+}
+
+export default function TeamAutocomplete({ label, options, value, onChange }: TeamAutocompleteProps) {
   return (
     <Autocomplete
       disablePortal
-      options={Constants.TEAMS}
+      options={options}
+      value={value}
+      onChange={(_event, newValue) => onChange(newValue)}
+      getOptionLabel={(team) => `${team.name} (${team.seed})`}
+      isOptionEqualToValue={(option, val) => option.id === val.id}
       sx={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label="Team 1" />}
+      renderInput={(params) => <TextField {...params} label={label} />}
     />
   );
 }

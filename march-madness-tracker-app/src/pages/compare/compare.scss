@@ -1,0 +1,36 @@
+.compare {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
+    max-width: 720px;
+    margin: 0 auto;
+
+    &__probability {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    &__probability-bar {
+        height: 10px;
+        border-radius: 5px;
+    }
+
+    &__weights {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    &__weight-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &__weight-label {
+        width: 180px;
+        flex-shrink: 0;
+    }
+}
