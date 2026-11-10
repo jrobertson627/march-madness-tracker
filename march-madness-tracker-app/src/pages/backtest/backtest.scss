@@ -1,0 +1,117 @@
+.backtest {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+
+    &__summary {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem 1.25rem;
+        border: 1px solid var(--mui-palette-divider);
+        border-radius: 8px;
+        background: var(--mui-palette-background-paper);
+
+        ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            max-width: 70ch;
+        }
+    }
+
+    &__panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        min-width: 0;
+
+        &--locked {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--mui-palette-primary-main);
+            border-radius: 8px;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            max-width: 70ch;
+        }
+    }
+
+    &__panel-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        min-width: 0;
+    }
+
+    &__h3 {
+        margin: 0.75rem 0 0;
+        font-size: 1.0625rem;
+    }
+
+    &__note {
+        margin: 0;
+        max-width: 70ch;
+        font-size: 0.9375rem;
+        color: var(--mui-palette-text-secondary);
+    }
+
+    &__num {
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
+    &__expected {
+        color: var(--mui-palette-text-secondary);
+        font-size: 0.8125rem;
+    }
+
+    &__model-row th,
+    &__model-row td {
+        font-weight: 700;
+    }
+
+    &__bar-head,
+    &__bar-cell {
+        width: 28%;
+        min-width: 5rem;
+    }
+
+    &__bar {
+        display: block;
+        height: 10px;
+        border-radius: 5px;
+        background: var(--mui-palette-text-secondary);
+    }
+
+    &__model-row &__bar {
+        background: var(--mui-palette-primary-main);
+    }
+
+    &__seasons {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.5rem 1rem;
+    }
+
+    details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        summary {
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+    }
+}
