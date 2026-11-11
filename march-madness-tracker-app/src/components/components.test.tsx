@@ -32,6 +32,12 @@ describe('ModelBadge', () => {
         render(<ModelBadge snapshot={matchup.snapshot} />);
         expect(screen.getByText(matchup.snapshot.model_id)).toBeInTheDocument();
         expect(screen.getByText(/ratings as of 2030-03-15/)).toBeInTheDocument();
+        expect(screen.queryByText(/season in progress/)).not.toBeInTheDocument();
+    });
+
+    it('says the season is in progress for a live snapshot, so the age of the ratings is clear', () => {
+        render(<ModelBadge snapshot={{ ...matchup.snapshot, kind: 'latest', as_of: '2031-01-12' }} />);
+        expect(screen.getByText(/ratings as of 2031-01-12 · season in progress/)).toBeInTheDocument();
     });
 });
 
