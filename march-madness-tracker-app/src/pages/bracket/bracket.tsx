@@ -63,6 +63,10 @@ function BracketPage() {
     const [copy, setCopy] = useState<'idle' | 'copied' | 'failed'>('idle');
 
     const season = seasonParam && Number.isInteger(Number(seasonParam)) ? Number(seasonParam) : null;
+    // a season in progress has ratings but no field until Selection Sunday, so there is nothing to ask the API for
+    const noBracket = season !== null && seasons.status === 'success' && seasons.list.includes(season) && !seasons.withBracket.includes(season);
+    // wait for the season list before asking for a bracket. If the list cannot be had, ask anyway.
+    const seasonsSettled = seasons.status === 'success' || seasons.status === 'error';
     const pickSet: PickSet = PICK_SETS.some((p) => p.key === params.get('picks')) ? (params.get('picks') as PickSet) : 'best_expected_points';
     const scoring = SCORING_PRESETS.find((s) => s.key === params.get('scoring')) ?? SCORING_PRESETS[0];
     const locks = useMemo(() => decodeLocks(params.get('lock')), [params]);
@@ -81,7 +85,7 @@ function BracketPage() {
             { replace: true },
         );
 
-    const base = useApi(season === null ? null : `bracket:${season}:${scoring.key}`, (signal) => getBracket(season as number, scoring.values, { signal }));
+    const base = useApi(season === null || noBracket || !seasonsSettled ? null : `bracket:${season}:${scoring.key}`, (signal) => getBracket(season as number, scoring.values, { signal }));
     const model = useMemo(() => (base.data ? safeModel(() => buildModel(base.data!)) : null), [base.data]);
     const resolved = useMemo(() => (model ? resolveLocks(model, locks) : { valid: [] as Lock[], results: [], dropped: [] as Lock[] }), [model, locks]);
 
@@ -98,12 +102,32 @@ function BracketPage() {
     const updating = base.updating || odds.updating || waiting;
 
     if (seasonParam === undefined) {
-        return seasons.latest !== null ? (
-            <Navigate to={`/bracket/${seasons.latest}`} replace />
+        return seasons.latestBracket !== null ? (
+            <Navigate to={`/bracket/${seasons.latestBracket}`} replace />
         ) : (
             <div className="bracket">
                 <StatusBanner status={seasons.status} error={seasons.error} onRetry={seasons.retry} />
-                <Typography>Looking for the newest season…</Typography>
+                <Typography>{seasons.status === 'success' ? 'No bracket has been published yet.' : 'Looking for the newest season…'}</Typography>
+            </div>
+        );
+    }
+
+    if (noBracket) {
+        return (
+            <div className="bracket">
+                <Typography variant="h4" component="h1">
+                    {season} bracket
+                </Typography>
+                <div className="bracket__controls">
+                    <SeasonSelect value={season} seasons={seasons.list} onChange={(s) => navigate(`/bracket/${s}`)} />
+                </div>
+                <Alert severity="info">
+                    The {season} field is announced on Selection Sunday, so there is no bracket to show yet. You can still compare any two teams using the ratings so far.
+                </Alert>
+                <div className="bracket__empty-links">
+                    <Link to={`/welcome?season=${season}`}>Compare two teams in {season}</Link>
+                    {seasons.latestBracket !== null && <Link to={`/bracket/${seasons.latestBracket}`}>See the {seasons.latestBracket} bracket</Link>}
+                </div>
             </div>
         );
     }
@@ -165,7 +189,7 @@ function BracketPage() {
             </Typography>
 
             <div className="bracket__controls">
-                <SeasonSelect value={season} seasons={seasons.list} onChange={changeSeason} />
+                <SeasonSelect value={season} seasons={seasons.withBracket} onChange={changeSeason} />
                 <div>
                     <Typography variant="caption" component="div" id="picks-label">
                         Picks
@@ -207,6 +231,7 @@ function BracketPage() {
                 {PICK_SETS.find((p) => p.key === pickSet)?.blurb}
             </Typography>
 
+            {(seasons.status === 'loading' || seasons.status === 'waking') && <StatusBanner status={seasons.status} error={null} />}
             <StatusBanner status={base.status} error={base.error} onRetry={base.retry} />
             {odds.status === 'waking' && <StatusBanner status="waking" error={null} />}
             {odds.error && (

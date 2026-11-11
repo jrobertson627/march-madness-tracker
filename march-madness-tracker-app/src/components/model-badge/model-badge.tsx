@@ -29,6 +29,7 @@ export default function ModelBadge({ snapshot, notes = [] }: ModelBadgeProps) {
                 </Tooltip>
                 <span className="model-badge__text">
                     Model <code>{snapshot.model_id}</code> · season {snapshot.season} · ratings as of {snapshot.as_of}
+                    {snapshot.kind === 'latest' && ' · season in progress'}
                 </span>
             </div>
             {snapshot.in_sample && <p className="model-badge__warning">{tip}</p>}

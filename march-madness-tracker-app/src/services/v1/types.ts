@@ -34,7 +34,8 @@ export interface HealthResponse {
 }
 
 export interface SeasonsResponse {
-    seasons: { season: number; snapshots: Snapshot[] }[];
+    /** `has_bracket` is false for a season in progress: it has predictions but no field until Selection Sunday. */
+    seasons: { season: number; has_bracket: boolean; snapshots: Snapshot[] }[];
 }
 
 export interface ModelsResponse {

@@ -1,5 +1,6 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
 import { backtest, bracket, bracketOdds, matchup, seasons, teams } from '../fixtures/fixtures';
@@ -203,6 +204,57 @@ describe('bracket and what-if', () => {
         renderPage(<BracketPage />, { path: '/bracket', route: '/bracket' });
         // the redirect target is not a route in this test, so the page itself is gone: nothing is left rendering the old season
         await waitFor(() => expect(screen.queryByText(/Looking for the newest season/)).not.toBeInTheDocument());
+    });
+});
+
+describe('a season in progress', () => {
+    // 2031 has ratings from January and no bracket, as the live season will until Selection Sunday
+    const live = {
+        seasons: [
+            ...seasons.seasons,
+            { season: 2031, has_bracket: false, snapshots: [{ ...seasons.seasons[0].snapshots[0], season: 2031, kind: 'latest' as const, as_of: '2031-01-12' }] },
+        ],
+    };
+    const handlers = { 'GET /v1/seasons': live, 'GET /v1/teams': teams, 'GET /v1/bracket/2030': bracket };
+
+    it('says when the bracket will exist instead of asking for one the API does not have', async () => {
+        const api = stubApi(handlers);
+        renderPage(<BracketPage />, { path: '/bracket/2031', route: '/bracket/:season' });
+        expect(await screen.findByText(/The 2031 field is announced on Selection Sunday/)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Compare two teams in 2031' })).toHaveAttribute('href', '/welcome?season=2031');
+        expect(screen.getByRole('link', { name: 'See the 2030 bracket' })).toHaveAttribute('href', '/bracket/2030');
+        expect(screen.queryByText(/Something went wrong/)).not.toBeInTheDocument();
+        expect(api.calls.filter((c) => c.url.pathname.startsWith('/v1/bracket'))).toHaveLength(0);
+    });
+
+    it('opens the bracket page on the newest season that has a bracket, not the newest season', async () => {
+        const api = stubApi(handlers);
+        render(
+            <MemoryRouter initialEntries={['/bracket']}>
+                <Routes>
+                    <Route path="/bracket" element={<BracketPage />} />
+                    <Route path="/bracket/:season" element={<BracketPage />} />
+                </Routes>
+            </MemoryRouter>,
+        );
+        expect(await screen.findByRole('heading', { name: '2030 bracket' })).toBeInTheDocument();
+        expect(api.to('GET', '/v1/bracket/2030').length).toBeGreaterThan(0);
+        expect(api.to('GET', '/v1/bracket/2031')).toHaveLength(0);
+    });
+
+    it('links the welcome page to a bracket that exists while it defaults to the season in progress', async () => {
+        stubApi(handlers);
+        renderPage(<InitialSearch />, { path: '/welcome', route: '/welcome' });
+        expect(await screen.findByRole('link', { name: /See the 2030 bracket/ })).toHaveAttribute('href', '/bracket/2030');
+    });
+
+    it('only offers seasons with a bracket in the bracket page season list', async () => {
+        stubApi(handlers);
+        renderPage(<BracketPage />, { path: '/bracket/2030', route: '/bracket/:season' });
+        await screen.findByRole('tab', { name: 'East' });
+        await userEvent.click(screen.getByRole('combobox', { name: /Season/ }));
+        const options = within(await screen.findByRole('listbox')).getAllByRole('option').map((o) => o.textContent);
+        expect(options).toEqual(['2030']);
     });
 });
 

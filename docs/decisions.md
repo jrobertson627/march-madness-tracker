@@ -49,3 +49,16 @@ Bars are drawn with CSS and the numbers are always written next to them. Would c
 Vitest 5 and Testing Library were added for tests. Vitest 3 had critical advisories in its test runner, so the version with the fixes was used (this needed Vite 6.4).
 react-router was updated within its allowed range because the earlier version had a high advisory (open-redirect XSS). The remaining `npm audit` findings are in
 development tools that were already in the project (ESLint, Babel and similar); `npm audit fix --force` was not run because it makes breaking upgrades.
+
+## 9. Seasons without a bracket
+
+A season in progress has ratings and no field until Selection Sunday. `/v1/seasons` says which seasons have a bracket (`has_bracket`). The bracket page opens on the
+newest season that has one, lists only those seasons, and for a season without one says when the field is announced and links to the comparison page, rather than asking
+the API for a bracket it does not have. It waits for the season list before asking for a bracket, which costs one extra short request on the first visit and avoids a
+request that is sure to fail. The comparison page still defaults to the newest season, and its badge says "season in progress" with the date of the ratings.
+
+## 10. Checks on every change
+
+GitHub Actions runs lint, the tests and the build on every push to `main` and every pull request (Node 22), plus a report-only `npm audit --omit=dev`. The build runs
+`tsc -b`, which also checks the fixtures against the API types. Render should deploy the static site only after these pass (the "After CI checks pass" auto-deploy
+setting in the Render dashboard).

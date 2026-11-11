@@ -19,6 +19,8 @@ function InitialSearch() {
     const [params, setParams] = useSearchParams();
     const seasons = useSeasons();
     const season = pickSeason(params.get('season'), seasons.list, seasons.latest);
+    // a season in progress has no bracket yet, so the link goes to the newest season that has one
+    const bracketSeason = season !== null && seasons.withBracket.includes(season) ? season : seasons.latestBracket;
     const teams = useApi(season === null ? null : `teams:${season}`, () => getTeams(season as number));
     const [teamA, setTeamA] = useState<TeamOption | null>(null);
     const [teamB, setTeamB] = useState<TeamOption | null>(null);
@@ -62,7 +64,7 @@ function InitialSearch() {
                 Compare
             </Button>
             <nav className="initial-search__links" aria-label="Other pages">
-                <Link to={season === null ? '/bracket' : `/bracket/${season}`}>See the {season ?? ''} bracket, with odds for every team</Link>
+                <Link to={bracketSeason === null ? '/bracket' : `/bracket/${bracketSeason}`}>See the {bracketSeason ?? ''} bracket, with odds for every team</Link>
                 <Link to="/backtest">See how the model did on past tournaments</Link>
             </nav>
         </div>
