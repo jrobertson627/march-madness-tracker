@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Lint, test and build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: march-madness-tracker-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: march-madness-tracker-app/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      # The build runs tsc -b first, which also checks every fixture in src/fixtures against the API response types.
+      - run: npm run build
+
+  audit:
+    name: Dependency audit (report only)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: march-madness-tracker-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: march-madness-tracker-app/package-lock.json
+      - run: npm ci
+      # Production dependencies only. The step reports findings in the log and does not fail the build.
+      - run: npm audit --omit=dev
+        continue-on-error: true
