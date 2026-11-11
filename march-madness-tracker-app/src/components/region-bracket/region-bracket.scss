@@ -1,0 +1,65 @@
+.region {
+    min-width: 0;
+
+    &__title {
+        margin: 0 0 0.5rem;
+        font-size: 1.125rem;
+    }
+
+    &__rounds {
+        display: flex;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+
+    &__round {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-width: 9.5rem;
+    }
+
+    &__round-title {
+        margin: 0 0 0.35rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--mui-palette-text-secondary);
+    }
+
+    &__games {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: space-around;
+        gap: 0.5rem;
+    }
+
+    &__game {
+        min-width: 0;
+    }
+}
+
+/* a phone: rounds one under another instead of side by side */
+@media (max-width: 760px) {
+    .region__rounds {
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .region__round {
+        min-width: 0;
+    }
+}
+
+.final-four {
+    min-width: 0;
+
+    &__games {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 22rem;
+    }
+}

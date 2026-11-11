@@ -1,0 +1,28 @@
+.model-badge {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    color: var(--mui-palette-text-secondary);
+
+    &__line {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    &__warning {
+        margin: 0;
+        max-width: 60ch;
+    }
+
+    &__notes {
+        margin: 0;
+        padding-left: 1.1rem;
+    }
+
+    code {
+        font-size: 0.8125rem;
+    }
+}

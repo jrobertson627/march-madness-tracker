@@ -1,0 +1,127 @@
+.bracket-game {
+    border: 1px solid var(--mui-palette-divider);
+    border-radius: 6px;
+    background: var(--mui-palette-background-paper);
+    font-size: 0.8125rem;
+    min-width: 0;
+
+    &--locked {
+        border-color: var(--mui-palette-primary-main);
+    }
+
+    &__teams {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__team {
+        border-left: 3px solid transparent;
+
+        & + & {
+            border-top: 1px solid var(--mui-palette-divider);
+        }
+
+        &--pick {
+            border-left-color: var(--mui-palette-text-secondary);
+            font-weight: 700;
+        }
+
+        &--locked {
+            border-left-color: var(--mui-palette-primary-main);
+            background: var(--mui-palette-action-selected);
+        }
+
+        &--won .bracket-game__name {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    &__static,
+    &__button {
+        display: grid;
+        grid-template-columns: 1.4rem minmax(0, 1fr) auto auto;
+        grid-template-areas:
+            'seed name score p'
+            '. tags tags tags';
+        align-items: baseline;
+        column-gap: 0.4rem;
+        width: 100%;
+        padding: 0.3rem 0.4rem;
+        box-sizing: border-box;
+        text-align: left;
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: 0;
+    }
+
+    &__button {
+        cursor: pointer;
+
+        &:hover {
+            background: var(--mui-palette-action-hover);
+        }
+    }
+
+    &__seed {
+        grid-area: seed;
+        color: var(--mui-palette-text-secondary);
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+    }
+
+    &__name {
+        grid-area: name;
+        min-width: 0;
+        overflow-wrap: break-word;
+    }
+
+    &__score {
+        grid-area: score;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__p {
+        grid-area: p;
+        min-width: 2.4rem;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__tags {
+        grid-area: tags;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--mui-palette-text-secondary);
+    }
+
+    &__foot {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: flex-end;
+        gap: 0.1rem 0.6rem;
+        padding: 0.15rem 0.4rem 0.25rem;
+        border-top: 1px solid var(--mui-palette-divider);
+        font-size: 0.75rem;
+    }
+
+    &__hint,
+    &__result {
+        margin-right: auto;
+        color: var(--mui-palette-text-secondary);
+    }
+
+    &__result--right {
+        color: var(--mui-palette-success-main);
+        font-weight: 600;
+    }
+
+    &__link {
+        color: var(--mui-palette-text-secondary);
+    }
+}

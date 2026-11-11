@@ -1,0 +1,52 @@
+.shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.5rem 1.5rem;
+        padding: 0.75rem max(1rem, env(safe-area-inset-left, 0px)) 0.75rem max(1rem, env(safe-area-inset-right, 0px));
+        border-bottom: 1px solid var(--mui-palette-divider);
+    }
+
+    &__brand {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    &__nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.25rem;
+
+        a {
+            color: var(--mui-palette-text-secondary);
+            text-decoration: none;
+            padding: 0.25rem 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        a:hover {
+            color: inherit;
+        }
+
+        a.active {
+            color: inherit;
+            font-weight: 600;
+            border-bottom-color: var(--mui-palette-primary-main);
+        }
+    }
+
+    &__main {
+        flex: 1;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 1.5rem max(1rem, env(safe-area-inset-left, 0px)) 3rem max(1rem, env(safe-area-inset-right, 0px));
+    }
+}

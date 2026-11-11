@@ -1,0 +1,40 @@
+.title-odds {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+
+    > div {
+        align-self: stretch;
+    }
+
+    &__seed {
+        display: inline-block;
+        min-width: 1.4rem;
+        color: var(--mui-palette-text-secondary);
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__region {
+        color: var(--mui-palette-text-secondary);
+        font-size: 0.8125rem;
+    }
+
+    &__num {
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
+    &__delta {
+        display: block;
+        font-size: 0.6875rem;
+
+        &--up {
+            color: var(--mui-palette-success-main);
+        }
+
+        &--down {
+            color: var(--mui-palette-error-main);
+        }
+    }
+}
